@@ -1,5 +1,7 @@
 # Go-Enumerable
 
+[![Build Status](https://drone.io/github.com/swdyh/go-enumerable/status.png)](https://drone.io/github.com/swdyh/go-enumerable/latest)
+
 Create enumerable functions(map, filter, some, every, reduce, reduceRight).
 
 ## Install
