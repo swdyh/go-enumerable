@@ -26,7 +26,7 @@ func ExampleMakeSome() {
 
 func ExampleMakeEvery() {
 	var everyOdd func([]int) bool
-	enumerable.MakeEvery(&hasOdd, func(i int) bool { return i%2 == 1 })
+	enumerable.MakeEvery(&everyOdd, func(i int) bool { return i%2 == 1 })
 	fmt.Println(everyOdd([]int{1, 3, 5})) // true
 	fmt.Println(everyOdd([]int{1, 2, 3})) // false
 }
