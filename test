@@ -1,0 +1,2 @@
+#!/bin/sh
+GOPATH=`pwd` go test enumerable $@

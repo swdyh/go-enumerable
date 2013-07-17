@@ -1,0 +1,8 @@
+#!/bin/sh
+export GOPATH=`pwd`
+if [ ! -e src/github.com/axw/gocov ]; then
+  c="go get github.com/axw/gocov/gocov"
+  echo $c
+  $c
+fi
+./bin/gocov test enumerable  | ./bin/gocov report
