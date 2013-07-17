@@ -5,6 +5,14 @@ import (
 	"fmt"
 )
 
+func Example() {
+	var twiceInt func([]int) []int
+	enumerable.MakeMap(&twiceInt, func(i int) int { return i * 2 })
+	fmt.Println(twiceInt([]int{1, 2, 3}))
+	// Output:
+	// [2 4 6]
+}
+
 func ExampleMakeMap() {
 	var twiceInt func([]int) []int
 	enumerable.MakeMap(&twiceInt, func(i int) int { return i * 2 })
