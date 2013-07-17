@@ -1,3 +1,7 @@
+// Create enumerable functions(map, filter, some, every, reduce, reduceRight) for slice by reflection.
+//
+// References:
+//   https://github.com/swdyh/go-enumerable
 package enumerable
 
 import (
