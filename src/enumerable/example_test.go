@@ -3,6 +3,7 @@ package enumerable_test
 import (
 	"enumerable"
 	"fmt"
+	"time"
 )
 
 func Example() {
@@ -63,4 +64,28 @@ func ExampleMakeReduceRight() {
 	fmt.Println(minus([]int{1, 2, 3}))
 	// Output:
 	// 0
+}
+
+func ExampleMakeMapC() {
+	var twiceInt func([]int) []int
+	f := func(i int) int {
+		time.Sleep(10 * time.Millisecond)
+		return i * 2
+	}
+	enumerable.MakeMapC(&twiceInt, f, 2)
+	fmt.Println(twiceInt([]int{1, 2, 3}))
+	// Output:
+	// [2 4 6]
+}
+
+func ExampleFist() {
+	var twiceInt func([]int) int
+	f := func(i int) int {
+		time.Sleep(time.Duration(10-i) * time.Millisecond)
+		return i * 2
+	}
+	enumerable.MakeFirst(&twiceInt, f)
+	fmt.Println(twiceInt([]int{1, 2, 3}))
+	// Output:
+	// 6
 }

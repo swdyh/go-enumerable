@@ -120,3 +120,81 @@ func TestMakeReduceRightInit(t *testing.T) {
 		t.Error(rs, "should be equal", es)
 	}
 }
+
+func TestMakeMapSqrtC(t *testing.T) {
+	var mapSqrt func([]float64) []float64
+	MakeMapC(&mapSqrt, math.Sqrt, 3)
+	r := mapSqrt([]float64{1, 4, 9})
+	rs := toS(r)
+	es := "[]float64{1, 2, 3}"
+	if rs != es {
+		t.Error(rs, "should be equal", es)
+	}
+}
+
+func TestMakeFilterC(t *testing.T) {
+	var filterPlus func([]int) []int
+	MakeFilterC(&filterPlus, func(i int) bool { return i > 0 }, 3)
+	r := filterPlus([]int{-10, -1, 0, 1, 10})
+	rs := toS(r)
+	es := "[]int{1, 10}"
+	if toS(r) != es {
+		t.Error(rs, "should be equal", es)
+	}
+}
+
+func TestMakeSomeC(t *testing.T) {
+	var hasOne func([]int) bool
+	MakeSomeC(&hasOne, func(i int) bool { return i == 1 }, 3)
+	r := hasOne([]int{-10, -1, 0, 1, 10})
+	rs := toS(r)
+	es := "true"
+	if rs != es {
+		t.Error(rs, "should be equal", es)
+	}
+	r2 := hasOne([]int{-10, -1, 0, 10})
+	rs2 := toS(r2)
+	es2 := "false"
+	if rs2 != es2 {
+		t.Error(rs2, "should be equal", es2)
+	}
+}
+
+func TestMakeEveryC(t *testing.T) {
+	var everyPlus func([]int) bool
+	MakeEveryC(&everyPlus, func(i int) bool { return i > 0 }, 3)
+	r := everyPlus([]int{-10, -1, 0, 1, 10})
+	rs := toS(r)
+	es := "false"
+	if rs != es {
+		t.Error(rs, "should be equal", es)
+	}
+	r2 := everyPlus([]int{10, 1, 3, 10})
+	rs2 := toS(r2)
+	es2 := "true"
+	if rs2 != es2 {
+		t.Error(rs2, "should be equal", es2)
+	}
+}
+
+func TestMakeFirst(t *testing.T) {
+	var mapSqrt func([]float64) float64
+	MakeFirst(&mapSqrt, math.Sqrt)
+	r := mapSqrt([]float64{1, 4, 9})
+	rs := toS(r)
+	es := "1"
+	if rs != es {
+		t.Error(rs, "should be equal", es)
+	}
+}
+
+func TestMakeMapSqrtC_zero(t *testing.T) {
+	var mapSqrt func([]float64) []float64
+	MakeMapC(&mapSqrt, math.Sqrt, 0)
+	r := mapSqrt([]float64{1, 4, 9})
+	rs := toS(r)
+	es := "[]float64{1, 2, 3}"
+	if rs != es {
+		t.Error(rs, "should be equal", es)
+	}
+}
