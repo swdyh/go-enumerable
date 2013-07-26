@@ -4,6 +4,11 @@
 
 Create enumerable functions(map, filter, some, every, reduce, reduceRight).
 
+## Update
+
+  * 2013-07-25 : Add concurrent functions.
+  * 2013-07-09 : First version
+
 ## Install
 
     go get github.com/swdyh/go-enumerable/src/enumerable
