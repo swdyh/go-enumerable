@@ -44,6 +44,11 @@ Create enumerable functions(map, filter, some, every, reduce, reduceRight).
 https://github.com/swdyh/go-enumerable/blob/master/src/enumerable/example_makemap_test.go
 https://github.com/swdyh/go-enumerable/blob/master/src/enumerable/enumerable_test.go
 
+
 ## Github
 
 https://github.com/swdyh/go-enumerable
+
+## License
+
+The MIT License (MIT) Copyright (c) 2013 swdyh
