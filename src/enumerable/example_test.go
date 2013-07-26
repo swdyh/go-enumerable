@@ -78,7 +78,7 @@ func ExampleMakeMapC() {
 	// [2 4 6]
 }
 
-func ExampleFist() {
+func ExampleMakeFirst() {
 	var twiceInt func([]int) int
 	f := func(i int) int {
 		time.Sleep(time.Duration(10-i) * time.Millisecond)
