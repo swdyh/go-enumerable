@@ -4,32 +4,32 @@ import (
 	"reflect"
 )
 
-type val struct {
+type listVal struct {
 	Index int
 	Val   reflect.Value
 }
 
-func runGoroutines(size int, fv reflect.Value) (chan val, chan val) {
-	chin := make(chan val, size)
-	chout := make(chan val, size)
+func runGoroutines(size int, fv reflect.Value) (chan listVal, chan listVal) {
+	chin := make(chan listVal, size)
+	chout := make(chan listVal, size)
 	if size < 1 {
 		size = 1
 	}
 	for i := 0; i < size; i++ {
 		go func(i int, fv reflect.Value) {
 			for in := range chin {
-				chout <- val{in.Index, fv.Call([]reflect.Value{in.Val})[0]}
+				chout <- listVal{in.Index, fv.Call([]reflect.Value{in.Val})[0]}
 			}
 		}(i, fv)
 	}
 	return chin, chout
 }
 
-func send(chin chan val, list reflect.Value) {
+func send(chin chan listVal, list reflect.Value) {
 	size := list.Len()
 	go func() {
 		for i := 0; i < size; i++ {
-			chin <- val{i, list.Index(i)}
+			chin <- listVal{i, list.Index(i)}
 		}
 		close(chin)
 	}()
@@ -119,12 +119,12 @@ func MakeFirst(fptr interface{}, f interface{}) {
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		llen := list.Len()
-		chout := make(chan val, llen)
+		chout := make(chan listVal, llen)
 		quit := make(chan bool, list.Len())
 		for i := 0; i < llen; i++ {
 			go func(i int, v reflect.Value) {
 				select {
-				case chout <- val{i, fv.Call([]reflect.Value{v})[0]}:
+				case chout <- listVal{i, fv.Call([]reflect.Value{v})[0]}:
 				case <-quit:
 				}
 			}(i, list.Index(i))
