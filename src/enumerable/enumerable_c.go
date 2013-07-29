@@ -118,13 +118,21 @@ func MakeFirst(fptr interface{}, f interface{}) {
 	fv := reflect.ValueOf(f)
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
-		chout := make(chan val)
-		for i := 0; i < list.Len(); i++ {
+		llen := list.Len()
+		chout := make(chan val, llen)
+		quit := make(chan bool, list.Len())
+		for i := 0; i < llen; i++ {
 			go func(i int, v reflect.Value) {
-				chout <- val{i, fv.Call([]reflect.Value{v})[0]}
+				select {
+				case chout <- val{i, fv.Call([]reflect.Value{v})[0]}:
+				case <-quit:
+				}
 			}(i, list.Index(i))
 		}
 		v := <-chout
+		for i := 0; i < llen; i++ {
+			quit <- true
+		}
 		return []reflect.Value{v.Val}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
