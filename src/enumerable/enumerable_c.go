@@ -16,23 +16,23 @@ func runGoroutines(size int, fv reflect.Value) (chan val, chan val) {
 		size = 1
 	}
 	for i := 0; i < size; i++ {
-		go func(i int, chin chan val, chout chan val, fv reflect.Value) {
+		go func(i int, fv reflect.Value) {
 			for in := range chin {
 				chout <- val{in.Index, fv.Call([]reflect.Value{in.Val})[0]}
 			}
-		}(i, chin, chout, fv)
+		}(i, fv)
 	}
 	return chin, chout
 }
 
 func send(chin chan val, list reflect.Value) {
 	size := list.Len()
-	go func(chin chan val) {
+	go func() {
 		for i := 0; i < size; i++ {
 			chin <- val{i, list.Index(i)}
 		}
 		close(chin)
-	}(chin)
+	}()
 }
 
 func MakeMapC(fptr interface{}, f interface{}, gsize int) {
