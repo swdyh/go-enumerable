@@ -10,8 +10,8 @@ type val struct {
 }
 
 func runGoroutines(size int, fv reflect.Value) (chan val, chan val) {
-	chin := make(chan val)
-	chout := make(chan val)
+	chin := make(chan val, size)
+	chout := make(chan val, size)
 	if size < 1 {
 		size = 1
 	}
