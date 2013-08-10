@@ -85,7 +85,6 @@ func validateReduceType(decType reflect.Type, impType reflect.Type, iv []interfa
 	}
 	if len(iv) > 0 {
 		rType := reflect.TypeOf(iv[0])
-		fmt.Println("rtype", rType)
 		if err := assertTypeEqual(decType.Out(0), rType); err != nil {
 			return err
 		}
