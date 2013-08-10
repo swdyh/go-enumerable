@@ -124,9 +124,9 @@ func assertArgRetNum(funcType reflect.Type, numIn int, numOut int) error {
 	return nil
 }
 
-func assertTypeEqual(decType reflect.Type, impType reflect.Type) error {
-	if decType != impType {
-		return &TypeError{fmt.Sprintf("%v != %v", decType, impType)}
+func assertTypeEqual(t1 reflect.Type, t2 reflect.Type) error {
+	if t1 != t2 {
+		return &TypeError{fmt.Sprintf("%v != %v", t1, t2)}
 	}
 	return nil
 }
