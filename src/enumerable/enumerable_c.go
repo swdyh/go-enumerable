@@ -35,10 +35,13 @@ func send(chin chan listVal, list reflect.Value) {
 	}()
 }
 
-func MakeMapC(fptr interface{}, f interface{}, gsize int) {
+func MakeMapC(fptr interface{}, f interface{}, gsize int) error {
 	fn := reflect.ValueOf(fptr).Elem()
-	out := fn.Type().Out(0)
 	fv := reflect.ValueOf(f)
+	if err := validateMapType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
+	out := fn.Type().Out(0)
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -52,12 +55,16 @@ func MakeMapC(fptr interface{}, f interface{}, gsize int) {
 		return []reflect.Value{s}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
+	return nil
 }
 
-func MakeFilterC(fptr interface{}, f interface{}, gsize int) {
+func MakeFilterC(fptr interface{}, f interface{}, gsize int) error {
 	fn := reflect.ValueOf(fptr).Elem()
-	out := fn.Type().Out(0)
 	fv := reflect.ValueOf(f)
+	if err := validateFilterType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
+	out := fn.Type().Out(0)
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -73,11 +80,15 @@ func MakeFilterC(fptr interface{}, f interface{}, gsize int) {
 		return []reflect.Value{s}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
+	return nil
 }
 
-func MakeSomeC(fptr interface{}, f interface{}, gsize int) {
+func MakeSomeC(fptr interface{}, f interface{}, gsize int) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateSomeEveryType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -92,11 +103,15 @@ func MakeSomeC(fptr interface{}, f interface{}, gsize int) {
 		return []reflect.Value{reflect.ValueOf(false)}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
+	return nil
 }
 
-func MakeEveryC(fptr interface{}, f interface{}, gsize int) {
+func MakeEveryC(fptr interface{}, f interface{}, gsize int) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateSomeEveryType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -111,11 +126,15 @@ func MakeEveryC(fptr interface{}, f interface{}, gsize int) {
 		return []reflect.Value{reflect.ValueOf(true)}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
+	return nil
 }
 
-func MakeFirst(fptr interface{}, f interface{}) {
+func MakeFirst(fptr interface{}, f interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateFirstType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
 	fr := func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		llen := list.Len()
@@ -136,4 +155,5 @@ func MakeFirst(fptr interface{}, f interface{}) {
 		return []reflect.Value{v.Val}
 	}
 	fn.Set(reflect.MakeFunc(fn.Type(), fr))
+	return nil
 }

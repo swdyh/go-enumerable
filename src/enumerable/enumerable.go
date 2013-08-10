@@ -8,10 +8,13 @@ import (
 	"reflect"
 )
 
-func MakeMap(fptr interface{}, f interface{}) {
+func MakeMap(fptr interface{}, f interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
-	out := fn.Type().Out(0)
 	fv := reflect.ValueOf(f)
+	if err := validateMapType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
+	out := fn.Type().Out(0)
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -23,12 +26,16 @@ func MakeMap(fptr interface{}, f interface{}) {
 		return []reflect.Value{s}
 	})
 	fn.Set(v)
+	return nil
 }
 
-func MakeFilter(fptr interface{}, f interface{}) {
+func MakeFilter(fptr interface{}, f interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
-	out := fn.Type().Out(0)
 	fv := reflect.ValueOf(f)
+	if err := validateFilterType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
+	out := fn.Type().Out(0)
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -42,11 +49,15 @@ func MakeFilter(fptr interface{}, f interface{}) {
 		return []reflect.Value{s}
 	})
 	fn.Set(v)
+	return nil
 }
 
-func MakeSome(fptr interface{}, f interface{}) {
+func MakeSome(fptr interface{}, f interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateSomeEveryType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -59,11 +70,15 @@ func MakeSome(fptr interface{}, f interface{}) {
 		return []reflect.Value{reflect.ValueOf(false)}
 	})
 	fn.Set(v)
+	return nil
 }
 
-func MakeEvery(fptr interface{}, f interface{}) {
+func MakeEvery(fptr interface{}, f interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateSomeEveryType(fn.Type(), fv.Type()); err != nil {
+		return err
+	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -76,11 +91,15 @@ func MakeEvery(fptr interface{}, f interface{}) {
 		return []reflect.Value{reflect.ValueOf(true)}
 	})
 	fn.Set(v)
+	return nil
 }
 
-func MakeReduce(fptr interface{}, f interface{}, iv ...interface{}) {
+func MakeReduce(fptr interface{}, f interface{}, iv ...interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateReduceType(fn.Type(), fv.Type(), iv); err != nil {
+		return err
+	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -99,11 +118,15 @@ func MakeReduce(fptr interface{}, f interface{}, iv ...interface{}) {
 		return []reflect.Value{r}
 	})
 	fn.Set(v)
+	return nil
 }
 
-func MakeReduceRight(fptr interface{}, f interface{}, iv ...interface{}) {
+func MakeReduceRight(fptr interface{}, f interface{}, iv ...interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
+	if err := validateReduceType(fn.Type(), fv.Type(), iv); err != nil {
+		return err
+	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
 		list := in[0]
 		l := list.Len()
@@ -122,4 +145,5 @@ func MakeReduceRight(fptr interface{}, f interface{}, iv ...interface{}) {
 		return []reflect.Value{r}
 	})
 	fn.Set(v)
+	return nil
 }

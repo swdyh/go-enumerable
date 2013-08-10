@@ -12,7 +12,10 @@ func toS(a interface{}) string {
 
 func TestMakeMapSqrt(t *testing.T) {
 	var mapSqrt func([]float64) []float64
-	MakeMap(&mapSqrt, math.Sqrt)
+	err := MakeMap(&mapSqrt, math.Sqrt)
+	if err != nil {
+		t.Error(err)
+	}
 	r := mapSqrt([]float64{1, 4, 9})
 	rs := toS(r)
 	es := "[]float64{1, 2, 3}"
@@ -21,9 +24,28 @@ func TestMakeMapSqrt(t *testing.T) {
 	}
 }
 
+func TestMakeMapSqrtTypeError(t *testing.T) {
+	var mapSqrt func([]float64) []float64
+	errIn := MakeMap(&mapSqrt, func(i int) float64 {
+		return float64(i)
+	})
+	if errIn == nil {
+		t.Error("errIn shoud be TypeError")
+	}
+	errOut := MakeMap(&mapSqrt, func(i float64) int {
+		return int(i)
+	})
+	if errOut == nil {
+		t.Error("errOut shoud be TypeError")
+	}
+}
+
 func TestMakeMapTwice(t *testing.T) {
 	var twice func([]string) []string
-	MakeMap(&twice, func(i string) string { return i + i })
+	err := MakeMap(&twice, func(i string) string { return i + i })
+	if err != nil {
+		t.Error(err)
+	}
 	r := twice([]string{"a", "bb", ""})
 	rs := toS(r)
 	es := `[]string{"aa", "bbbb", ""}`
@@ -34,7 +56,10 @@ func TestMakeMapTwice(t *testing.T) {
 
 func TestMakeFilter(t *testing.T) {
 	var filterPlus func([]int) []int
-	MakeFilter(&filterPlus, func(i int) bool { return i > 0 })
+	err := MakeFilter(&filterPlus, func(i int) bool { return i > 0 })
+	if err != nil {
+		t.Error(err)
+	}
 	r := filterPlus([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "[]int{1, 10}"
@@ -43,9 +68,28 @@ func TestMakeFilter(t *testing.T) {
 	}
 }
 
+func TestMakeFilterTypeError(t *testing.T) {
+	var filterPlus func([]int) []int
+	errArg := MakeFilter(&filterPlus, func(i float64) bool { return i > 0 })
+	if errArg == nil {
+		t.Error("errArg shoud be TypeError")
+	}
+	errRet := MakeFilter(&filterPlus, func(i int) int { return 1 })
+	if errRet == nil {
+		t.Error("errRet shoud be TypeError")
+	}
+	errRetVoid := MakeFilter(&filterPlus, func(i int) {})
+	if errRetVoid == nil {
+		t.Error("errRet shoud be TypeError")
+	}
+}
+
 func TestMakeSome(t *testing.T) {
 	var hasOne func([]int) bool
-	MakeSome(&hasOne, func(i int) bool { return i == 1 })
+	err := MakeSome(&hasOne, func(i int) bool { return i == 1 })
+	if err != nil {
+		t.Error(err)
+	}
 	r := hasOne([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "true"
@@ -62,7 +106,10 @@ func TestMakeSome(t *testing.T) {
 
 func TestMakeEvery(t *testing.T) {
 	var everyPlus func([]int) bool
-	MakeEvery(&everyPlus, func(i int) bool { return i > 0 })
+	err := MakeEvery(&everyPlus, func(i int) bool { return i > 0 })
+	if err != nil {
+		t.Error(err)
+	}
 	r := everyPlus([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "false"
@@ -79,7 +126,10 @@ func TestMakeEvery(t *testing.T) {
 
 func TestMakeReduce(t *testing.T) {
 	var sum func([]int) int
-	MakeReduce(&sum, func(r int, i int) int { return r + i })
+	err := MakeReduce(&sum, func(r int, i int) int { return r + i })
+	if err != nil {
+		t.Error(err)
+	}
 	r := sum([]int{1, 2, 3, 4, 5})
 	rs := toS(r)
 	es := "15"
@@ -88,9 +138,25 @@ func TestMakeReduce(t *testing.T) {
 	}
 }
 
+func TestMakeReduce2(t *testing.T) {
+	var sum func([]int) string
+	err := MakeReduce(&sum, func(r string, i int) string { return r + fmt.Sprintf("%d", i) }, "0")
+	if err != nil {
+		t.Error(err)
+	}
+	r := sum([]int{1, 2, 3, 4, 5})
+	es := "012345"
+	if r != es {
+		t.Error(r, "should be equal", es)
+	}
+}
+
 func TestMakeReduceInit(t *testing.T) {
 	var sum func([]int) int
-	MakeReduce(&sum, func(r int, i int) int { return r + i }, 1)
+	err := MakeReduce(&sum, func(r int, i int) int { return r + i }, 1)
+	if err != nil {
+		t.Error(err)
+	}
 	r := sum([]int{1, 2, 3, 4, 5})
 	rs := toS(r)
 	es := "16"
@@ -101,7 +167,10 @@ func TestMakeReduceInit(t *testing.T) {
 
 func TestMakeReduceRight(t *testing.T) {
 	var sum func([]int) int
-	MakeReduceRight(&sum, func(r int, i int) int { return r - i })
+	err := MakeReduceRight(&sum, func(r int, i int) int { return r - i })
+	if err != nil {
+		t.Error(err)
+	}
 	r := sum([]int{1, 2, 3, 4, 5})
 	rs := toS(r)
 	es := "-5"
@@ -112,7 +181,10 @@ func TestMakeReduceRight(t *testing.T) {
 
 func TestMakeReduceRightInit(t *testing.T) {
 	var sum func([]int) int
-	MakeReduceRight(&sum, func(r int, i int) int { return r - i }, 20)
+	err := MakeReduceRight(&sum, func(r int, i int) int { return r - i }, 20)
+	if err != nil {
+		t.Error(err)
+	}
 	r := sum([]int{1, 2, 3, 4, 5})
 	rs := toS(r)
 	es := "5"
@@ -123,7 +195,10 @@ func TestMakeReduceRightInit(t *testing.T) {
 
 func TestMakeMapSqrtC(t *testing.T) {
 	var mapSqrt func([]float64) []float64
-	MakeMapC(&mapSqrt, math.Sqrt, 3)
+	err := MakeMapC(&mapSqrt, math.Sqrt, 3)
+	if err != nil {
+		t.Error(err)
+	}
 	r := mapSqrt([]float64{1, 4, 9})
 	rs := toS(r)
 	es := "[]float64{1, 2, 3}"
@@ -134,7 +209,10 @@ func TestMakeMapSqrtC(t *testing.T) {
 
 func TestMakeFilterC(t *testing.T) {
 	var filterPlus func([]int) []int
-	MakeFilterC(&filterPlus, func(i int) bool { return i > 0 }, 3)
+	err := MakeFilterC(&filterPlus, func(i int) bool { return i > 0 }, 3)
+	if err != nil {
+		t.Error(err)
+	}
 	r := filterPlus([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "[]int{1, 10}"
@@ -145,7 +223,10 @@ func TestMakeFilterC(t *testing.T) {
 
 func TestMakeSomeC(t *testing.T) {
 	var hasOne func([]int) bool
-	MakeSomeC(&hasOne, func(i int) bool { return i == 1 }, 3)
+	err := MakeSomeC(&hasOne, func(i int) bool { return i == 1 }, 3)
+	if err != nil {
+		t.Error(err)
+	}
 	r := hasOne([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "true"
@@ -162,7 +243,10 @@ func TestMakeSomeC(t *testing.T) {
 
 func TestMakeEveryC(t *testing.T) {
 	var everyPlus func([]int) bool
-	MakeEveryC(&everyPlus, func(i int) bool { return i > 0 }, 3)
+	err := MakeEveryC(&everyPlus, func(i int) bool { return i > 0 }, 3)
+	if err != nil {
+		t.Error(err)
+	}
 	r := everyPlus([]int{-10, -1, 0, 1, 10})
 	rs := toS(r)
 	es := "false"
@@ -179,7 +263,10 @@ func TestMakeEveryC(t *testing.T) {
 
 func TestMakeFirst(t *testing.T) {
 	var mapSqrt func([]float64) float64
-	MakeFirst(&mapSqrt, math.Sqrt)
+	err := MakeFirst(&mapSqrt, math.Sqrt)
+	if err != nil {
+		t.Error(err)
+	}
 	r := mapSqrt([]float64{1, 4, 9})
 	rs := toS(r)
 	es := "1"
@@ -190,7 +277,10 @@ func TestMakeFirst(t *testing.T) {
 
 func TestMakeMapSqrtC_zero(t *testing.T) {
 	var mapSqrt func([]float64) []float64
-	MakeMapC(&mapSqrt, math.Sqrt, 0)
+	err := MakeMapC(&mapSqrt, math.Sqrt, 0)
+	if err != nil {
+		t.Error(err)
+	}
 	r := mapSqrt([]float64{1, 4, 9})
 	rs := toS(r)
 	es := "[]float64{1, 2, 3}"
