@@ -97,7 +97,7 @@ func MakeEvery(fptr interface{}, f interface{}) error {
 func MakeReduce(fptr interface{}, f interface{}, iv ...interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
-	if err := validateReduceType(fn.Type(), fv.Type()); err != nil {
+	if err := validateReduceType(fn.Type(), fv.Type(), iv); err != nil {
 		return err
 	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
@@ -124,7 +124,7 @@ func MakeReduce(fptr interface{}, f interface{}, iv ...interface{}) error {
 func MakeReduceRight(fptr interface{}, f interface{}, iv ...interface{}) error {
 	fn := reflect.ValueOf(fptr).Elem()
 	fv := reflect.ValueOf(f)
-	if err := validateReduceType(fn.Type(), fv.Type()); err != nil {
+	if err := validateReduceType(fn.Type(), fv.Type(), iv); err != nil {
 		return err
 	}
 	v := reflect.MakeFunc(fn.Type(), func(in []reflect.Value) []reflect.Value {
