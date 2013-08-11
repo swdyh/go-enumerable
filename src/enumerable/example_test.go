@@ -14,6 +14,14 @@ func Example() {
 	// [2 4 6]
 }
 
+func Example_Error() {
+	var twiceIntWrongType func([]int) []int
+	err := enumerable.MakeMap(&twiceIntWrongType, func(i int) string { return fmt.Sprintf("%d", i * 2) })
+	fmt.Println(err)
+	// Output:
+	// TypeError: int != string
+}
+
 func ExampleMakeMap() {
 	var twiceInt func([]int) []int
 	enumerable.MakeMap(&twiceInt, func(i int) int { return i * 2 })
