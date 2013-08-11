@@ -6,6 +6,7 @@ Create enumerable functions(map, filter, some, every, reduce, reduceRight).
 
 ## Update
 
+  * 2013-08-10 : Add type error.
   * 2013-07-25 : Add concurrent functions.
   * 2013-07-09 : First version
 
@@ -30,7 +31,12 @@ Create enumerable functions(map, filter, some, every, reduce, reduceRight).
     	var twiceInt func([]int) []int
     	enumerable.MakeMap(&twiceInt, func(i int) int { return i * 2 })
     	fmt.Println(twiceInt([]int{1, 2, 3})) // [2 4 6]
-    
+
+    	// type error
+    	var twiceIntWrongType func([]int) []int
+    	err := enumerable.MakeMap(&twiceIntWrongType, func(i int) string { return fmt.Sprintf("%d", i*2) })
+    	fmt.Println(err) // TypeError: int != string
+             
     	// filter for slice
     	var filterOdd func([]int) []int
     	enumerable.MakeFilter(&filterOdd, func(i int) bool { return i%2 == 1 })
