@@ -5,5 +5,4 @@ if [ ! -e src/github.com/axw/gocov ]; then
   echo $c
   $c
 fi
-go fmt src/enumerable/*.go > /dev/null
 ./bin/gocov test $@ enumerable | ./bin/gocov report

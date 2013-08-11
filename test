@@ -1,3 +1,2 @@
 #!/bin/sh
-go fmt src/enumerable/*.go > /dev/null
 GOPATH=`pwd` go test enumerable $@
